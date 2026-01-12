@@ -16,6 +16,9 @@ const router = createRouter({
     {
       path: "/student",
       name: "student-panel",
+      meta: {
+        layout: "LoggedInLayout",
+      },
       component: () => import("@/views/StudentPanelView.vue"),
     },
   ],

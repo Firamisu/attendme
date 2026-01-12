@@ -1,33 +1,65 @@
 <template>
-  <div class="table-container">
-    <div class="table-responsive">
-      <table>
+  <div class="w-full bg-white text-black">
+    <div class="overflow-x-auto border-2 border-black">
+      <table class="w-full text-left border-collapse min-w-[600px]">
         <thead>
-          <tr>
-            <th v-for="header in headers" :key="header.name">
+          <tr
+            class="border-b-2 border-black uppercase text-sm font-black tracking-tight"
+          >
+            <th
+              v-for="header in headers"
+              :key="header.name"
+              class="p-3 border-r border-black last:border-r-0"
+            >
               {{ header.name }}
             </th>
+            <th v-if="actions.length > 0" class="p-3">Actions</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr v-for="(item, index) in items" :key="index">
-            <td v-for="(value, key) in headers" :key="String(key)">
-              <p v-if="value.type == 'string' || value.type == 'number'">
+          <tr
+            v-for="(item, index) in items"
+            :key="index"
+            class="border-b border-black last:border-b-0"
+          >
+            <td
+              v-for="(value, key) in headers"
+              :key="String(key)"
+              class="p-3 border-r border-black last:border-r-0"
+            >
+              <span v-if="value.type == 'string' || value.type == 'number'">
                 {{ item[key] }}
-              </p>
-              <p v-else-if="value.type == 'boolean'">
-                {{ item[key] ? "Yes" : "No" }}
-              </p>
-              <p v-else-if="value.type == 'date'">
+              </span>
+              <span v-else-if="value.type == 'boolean'" class="font-bold">
+                {{ item[key] ? "YES" : "NO" }}
+              </span>
+              <span v-else-if="value.type == 'date'">
                 {{ new Date(item[key] as string | number).toLocaleString() }}
-              </p>
+              </span>
+            </td>
+
+            <td
+              v-if="actions.length != 0 && items.length > 0"
+              class="p-3 space-x-2"
+            >
+              <button
+                v-for="act in actions"
+                :key="act.name"
+                @click="act.action(item)"
+                class="border border-black px-2 py-1 text-xs font-bold uppercase hover:bg-black hover:text-white rounded-none transition-none"
+              >
+                {{ act.name }}
+              </button>
             </td>
           </tr>
 
           <tr v-if="items.length === 0">
             <td
-              :colspan="Object.keys(headers).length"
-              style="text-align: center"
+              :colspan="
+                Object.keys(headers).length + (actions.length > 0 ? 1 : 0)
+              "
+              class="p-10 text-center uppercase font-bold"
             >
               No data found.
             </td>
@@ -36,23 +68,30 @@
       </table>
     </div>
 
-    <div class="pagination">
-      <div class="info">
-        Showing {{ items.length }} of {{ totalCount }} results
+    <div
+      class="mt-4 flex flex-col sm:flex-row justify-between items-center border-2 border-black p-4 gap-4"
+    >
+      <div class="font-bold uppercase text-sm">
+        Showing {{ items.length }} / {{ totalCount }}
       </div>
 
-      <div class="controls">
-        <button @click="changePage(pageNumber - 1)" :disabled="pageNumber <= 1">
-          Previous
+      <div class="flex items-center gap-2">
+        <button
+          @click="changePage(pageNumber - 1)"
+          :disabled="pageNumber <= 1"
+          class="border-2 border-black px-4 py-1 font-bold uppercase disabled:opacity-20 rounded-none hover:bg-black hover:text-white"
+        >
+          Prev
         </button>
 
-        <span class="page-indicator"
-          >Page {{ pageNumber }} of {{ totalPages }}</span
-        >
+        <span class="px-4 font-bold">
+          {{ pageNumber }} / {{ totalPages }}
+        </span>
 
         <button
           @click="changePage(pageNumber + 1)"
           :disabled="pageNumber >= totalPages"
+          class="border-2 border-black px-4 py-1 font-bold uppercase disabled:opacity-20 rounded-none hover:bg-black hover:text-white"
         >
           Next
         </button>
@@ -62,8 +101,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Item } from "@/types/types";
+
 interface Props {
-  items: Array<{ [key: string]: string | number | boolean | Date }>;
+  items: Array<Item>;
   headers: {
     [key: string]: {
       name: string;
@@ -74,6 +115,10 @@ interface Props {
   pageNumber: number;
   pageSize: number;
   totalPages: number;
+  actions: Array<{
+    name: string;
+    action: (el: Item) => void;
+  }>;
 }
 
 const props = defineProps<Props>();
