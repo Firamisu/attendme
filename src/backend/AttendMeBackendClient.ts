@@ -47,6 +47,11 @@ export class AttendMeBackendClient extends AttendMeBackendClientBase {
     window.localStorage.removeItem("attend-me:deviceAuthData");
   }
 
+  userLogout() {
+    this.userTokenResult = undefined;
+    window.sessionStorage.removeItem("attend-me:userAuthData");
+  }
+
   override userLogin(
     loginName: string,
     password: string,
