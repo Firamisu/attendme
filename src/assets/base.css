@@ -60,6 +60,14 @@
   font-weight: normal;
 }
 
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 /*body {
   min-height: 100vh;
   color: var(--color-text);

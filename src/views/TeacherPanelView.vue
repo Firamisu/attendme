@@ -2,11 +2,10 @@
   <div
     class="p-4 md:p-8 max-w-7xl mx-auto space-y-6 bg-white min-h-screen text-black"
   >
-    <!-- Nagłówek dla studenta -->
     <div class="pb-4 mb-6 flex justify-between items-center">
       <div>
-        <h1 class="text-3xl font-bold">Student Panel</h1>
-        <p class="text-gray-600 mt-2">Your course sessions</p>
+        <h1 class="text-3xl font-bold">Teacher Panel</h1>
+        <p class="text-gray-600 mt-2">Manage your course sessions</p>
       </div>
       
     </div>
@@ -78,20 +77,15 @@ let currentFilter: { search?: string; filter?: string } = {};
 getSessions();
 
 function viewSession(el: Item): void {
-  // Nawiguj do szczegółów sesji
-  // el to wiersz z tabeli - musi mieć pole z ID
+
   console.log("nawiguj do sesji:", el);
   
-  // WAŻNE: Musimy wiedzieć jak nazywa się pole z ID
-  // Sprawdźmy w konsoli co jest w 'el'
-  // Zakładamy że to 'courseSessionId' lub podobne
   const sessionId = (el as any).courseSessionId || (el as any).id;
-  const courseGroupId = (el as any).courseGroupId;
   
-  if (sessionId && courseGroupId) {
-    router.push({ name: "student-session-details", params: { groupId: courseGroupId, id: sessionId } });
+  if (sessionId) {
+    router.push({ name: "session-details", params: { id: sessionId } });
   } else {
-    console.error("Nie znaleziono ID sesji lub grupy w:", el);
+    console.error("Nie znaleziono ID sesji w:", el);
   }
 }
 
@@ -107,7 +101,7 @@ async function getSessions(
 
   console.log("Wysyłam zapytanie do API...");
   
-  await Backend.courseStudentSessionsGet({
+  await Backend.courseTeacherSessionsGet({
     pageNumber,
     pageSize: 5,
     filters: buildFilter(currentFilter),

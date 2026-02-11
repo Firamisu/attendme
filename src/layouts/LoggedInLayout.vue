@@ -7,19 +7,20 @@
         <div class="flex items-center gap-4">
           <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
             <span
-              class="text-xs font-black uppercase tracking-tighter bg-black text-white px-2 py-0.5"
+              class="text-xs font-black uppercase tracking-tighter bg-black text-white px-2 py-0.5 rounded-md"
             >
               Account
             </span>
             <span
               class="text-sm font-bold uppercase truncate max-w-[100px] sm:max-w-none"
             >
-              John Doe
+              {{ displayName }}
             </span>
           </div>
 
           <button
-            class="border-2 border-black px-3 py-1 text-xs font-black uppercase hover:bg-red-600 hover:text-white transition-none rounded-none"
+            @click="logout"
+            class="border-2 border-black px-3 py-1 text-xs font-black uppercase hover:bg-red-600 hover:text-white transition-none rounded-md"
           >
             Log Out
           </button>
@@ -42,3 +43,28 @@
     </footer>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { Backend } from "@/main";
+import { useAuthStore } from "@/stores/auth";
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const displayName = computed(() => {
+  const user = authStore.user;
+  if (!user) return "Unknown";
+  const name = user.name || "";
+  const surname = user.surname || "";
+  const combined = `${name} ${surname}`.trim();
+  return combined.length > 0 ? combined : user.loginName || "User";
+});
+
+function logout() {
+  Backend.userLogout();
+  authStore.clear();
+  router.push({ name: "login" });
+}
+</script>
