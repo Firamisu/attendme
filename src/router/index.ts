@@ -1,4 +1,3 @@
-import LoginView from "@/views/LoginView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { Backend } from "@/main";
@@ -13,7 +12,7 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: LoginView,
+      component: () => import("@/views/LoginView.vue"),
     },
     {
       path: "/teacher",
@@ -32,12 +31,12 @@ const router = createRouter({
       component: () => import("@/views/StudentPanelView.vue"),
     },
     {
-      path: "/session/:id",
-      name: "session-details",
+      path: "/teacher/session/:id",
+      name: "teacher-session-details",
       meta: {
         layout: "LoggedInLayout",
       },
-      component: () => import("@/views/SessionDetailsView.vue"),
+      component: () => import("@/views/TeacherSessionDetailsView.vue"),
     },
     {
       path: "/student/session/:groupId/:id",
@@ -47,6 +46,27 @@ const router = createRouter({
       },
       component: () => import("@/views/StudentSessionDetailsView.vue"),
     },
+    {
+      path: "/register-device/:token",
+      name: "register-device",
+      component: () => import("@/views/RegisterDeviceView.vue"),
+    },
+    {
+      path: "/register-device-success",
+      name: "register-device-success",
+      component: () => import("@/views/RegisterDeviceSuccess.vue"),
+    },
+    {
+      path: "/student/scanner",
+      name: "student-scanner",
+      component: () => import("@/views/StudentScannerView.vue"),
+    },
+    {
+      path: "/teacher/scanner/:tokenData",
+      name: "teacher-scanner",
+      component: () => import("@/views/TeacherScannerView.vue"),
+    }
+
   ],
 });
 

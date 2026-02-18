@@ -63,7 +63,6 @@ export class AttendMeBackendClient extends AttendMeBackendClientBase {
       // set token for further processing
       this.userTokenResult = r;
 
-      //
       window.sessionStorage.setItem(
         "attend-me:userAuthData",
         JSON.stringify(r),

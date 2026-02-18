@@ -9,7 +9,7 @@
             <span
               class="text-xs font-black uppercase tracking-tighter bg-black text-white px-2 py-0.5 rounded-md"
             >
-              Account
+              Zalogowany jako
             </span>
             <span
               class="text-sm font-bold uppercase truncate max-w-[100px] sm:max-w-none"
@@ -22,7 +22,7 @@
             @click="logout"
             class="border-2 border-black px-3 py-1 text-xs font-black uppercase hover:bg-red-600 hover:text-white transition-none rounded-md"
           >
-            Log Out
+            Wyloguj
           </button>
         </div>
 
@@ -39,7 +39,7 @@
     <footer
       class="border-t-2 border-black p-4 text-center text-xs font-bold uppercase"
     >
-      &copy; 2026 AttendMe System
+      &copy; 2026 AttendMe
     </footer>
   </div>
 </template>

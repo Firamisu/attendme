@@ -1,96 +1,68 @@
 <template>
-  <main
-    class="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4"
-  >
-    <h1 class="text-3xl font-black mb-8 tracking-tighter text-black">
-      ATTEND<span class="text-blue-600">ME</span>
-    </h1>
-
-    <div class="w-full max-w-sm bg-white border-2 border-black p-8 rounded-lg">
-      <h2 class="text-xl font-bold mb-6">Login</h2>
-
-      <form @submit.prevent="login()" class="space-y-4">
-        <div>
-          <label for="username" class="block text-sm font-bold uppercase mb-1"
-            >Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            v-model="username"
-            class="w-full border-2 border-black p-2 focus:bg-yellow-50 outline-none rounded-md"
-            placeholder="Enter username"
-          />
+  <div class="min-h-screen bg-white text-black flex flex-col">
+    <div class="flex-1 flex items-center justify-center px-4 py-12">
+      <div
+        class="w-full max-w-md border-4 border-black bg-white brutal-shadow p-8 space-y-8"
+      >
+        <div class="text-center space-y-4">
+          <h1 class="text-4xl font-black uppercase tracking-tight">AttendMe</h1>
         </div>
 
-        <div>
-          <label for="password" class="block text-sm font-bold uppercase mb-1"
-            >Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            class="w-full border-2 border-black p-2 focus:bg-yellow-50 outline-none rounded-md"
-            placeholder="••••••••"
-          />
-        </div>
+        <form @submit.prevent="handleLogin" class="space-y-6">
+          <div class="space-y-2">
+            <label class="block text-xl font-black uppercase"> Login </label>
+            <input
+              v-model="credentials.login"
+              type="text"
+              placeholder="Podaj twój login"
+              required
+              autocomplete="username"
+              class="w-full p-4 border-4 border-black bg-white text-lg font-medium focus:outline-none focus:ring-4 focus:ring-black/30 brutal-shadow-sm"
+            />
+          </div>
 
-        <button
-          type="submit"
-          class="w-full bg-black text-white py-3 font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-lg"
-        >
-          Login
-        </button>
+          <div class="space-y-2">
+            <label class="block text-xl font-black uppercase"> Hasło </label>
+            <input
+              v-model="credentials.password"
+              type="password"
+              placeholder="Podaj hasło"
+              required
+              autocomplete="current-password"
+              class="w-full p-4 border-4 border-black bg-white text-lg font-medium focus:outline-none focus:ring-4 focus:ring-black/30 brutal-shadow-sm"
+            />
+          </div>
 
-        <div
-          v-if="errorMessage"
-          class="mt-4 p-2 border border-red-600 text-red-600 text-sm font-bold rounded-md"
-        >
-          {{ errorMessage }}
-        </div>
-      </form>
+          <div
+            v-if="error"
+            class="bg-red-600 text-white font-black text-md uppercase px-1 py-1 border-4 border-black text-center"
+          >
+            {{ error }}
+          </div>
+          <button
+            type="submit"
+            :disabled="loading"
+            class="w-full bg-blue-600 text-white font-black text-xl uppercase py-5 border-4 border-black brutal-shadow hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {{ loading ? "Logowanie..." : "Zaloguj" }}
+          </button>
+        </form>
+      </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { Backend } from "@/main";
-import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
+import { useLogin } from "@/composables/useLogin";
 
-const username = ref<string>("");
-const password = ref<string>("");
-const errorMessage = ref<string | null>(null);
 const router = useRouter();
-const authStore = useAuthStore();
 
-async function login() {
-  await Backend.userLogin(username.value, password.value)
-    .then(async (response) => {
-      if (!response.token) {
-        throw new Error("No token received");
-      }
+const { credentials, loading, error, login } = useLogin();
 
-      const user = await Backend.userGet(undefined);
-
-      authStore.setUser(user);
-
-      if (user.isTeacher) {
-        router.push({ name: "teacher-panel" });
-      } else if (user.isStudent) {
-        router.push({ name: "student-panel" });
-      } else {
-        throw new Error("User has no valid role");
-      }
-
-      errorMessage.value = null;
-    })
-    .catch((error) => {
-      console.error("Błąd logowania:", error);
-      authStore.clear();
-      errorMessage.value = "Login failed: " + error.message;
-    });
-}
+const handleLogin = async () => {
+  const result = await login();
+  if (!result.success) return;
+  router.push({ name: result.redirectTo });
+};
 </script>

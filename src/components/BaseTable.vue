@@ -1,6 +1,6 @@
 <template>
   <div class="w-full bg-white text-black">
-    <div class="overflow-x-auto border-2 border-black rounded-lg">
+    <div class="overflow-x-auto border-2 border-black">
       <table class="w-full text-left border-collapse min-w-[600px]">
         <thead>
           <tr
@@ -47,7 +47,7 @@
                 v-for="act in actions"
                 :key="act.name"
                 @click="act.action(item)"
-                class="border border-black px-2 py-1 text-xs font-bold uppercase hover:bg-black hover:text-white rounded-md transition-none"
+                class="border border-black px-2 py-1 text-xs font-bold uppercase hover:bg-black hover:text-white transition-none"
               >
                 {{ act.name }}
               </button>
@@ -69,7 +69,7 @@
     </div>
 
     <div
-      class="mt-4 flex flex-col sm:flex-row justify-between items-center border-2 border-black p-4 gap-4 rounded-lg"
+      class="mt-4 flex flex-col sm:flex-row justify-between items-center border-2 border-black p-4 gap-4"
     >
       <div class="font-bold uppercase text-sm">
         Showing {{ items.length }} / {{ totalCount }}
@@ -79,7 +79,7 @@
         <button
           @click="changePage(pageNumber - 1)"
           :disabled="pageNumber <= 1"
-          class="border-2 border-black px-4 py-1 font-bold uppercase disabled:opacity-20 rounded-md hover:bg-black hover:text-white"
+          class="border-2 border-black px-4 py-1 font-bold uppercase disabled:opacity-20 hover:bg-black hover:text-white"
         >
           Prev
         </button>
@@ -91,7 +91,7 @@
         <button
           @click="changePage(pageNumber + 1)"
           :disabled="pageNumber >= totalPages"
-          class="border-2 border-black px-4 py-1 font-bold uppercase disabled:opacity-20 rounded-md hover:bg-black hover:text-white"
+          class="border-2 border-black px-4 py-1 font-bold uppercase disabled:opacity-20 hover:bg-black hover:text-white"
         >
           Next
         </button>
